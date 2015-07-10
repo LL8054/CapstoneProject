@@ -1,0 +1,62 @@
+---
+title: "Quiz1"
+output: html_document
+---
+
+Quiz 1
+
+1.) The en_US.blogs.txt file is how many megabytes?
+
+205
+
+
+2.) The en_US.twitter.txt has how many lines of text?
+
+2,360,148
+
+
+3.) Question 3
+What is the length of the longest line seen in any of the three en_US data sets?
+
+```{r}
+setwd("~/LL/Coursera/Courses/Capstone/CapstoneProject")
+path <- "~/LL/Coursera/Courses/Capstone/Coursera-SwiftKey/final/"
+
+enBlogsLines <- readLines(paste(path, "en_US/en_US.blogs.txt", sep=""), skipNul=TRUE)
+enNewsLines <- readLines(paste(path, "en_US/en_US.news.txt", sep=""), skipNul=TRUE)
+enTwitterLines <- readLines(paste(path, "en_US/en_US.twitter.txt", sep=""), skipNul=TRUE)
+
+longestBlog <- enBlogsLines[1]
+longestNews <- enNewsLines[1]
+longestTwitter <- enTwitterLines[1]
+
+for(i in 1:length(enBlogsLines)){
+        if (nchar(enBlogsLines[i]) > nchar(longestBlog)) {
+                longestBlog <- enBlogsLines[i]
+                }
+            
+        } 
+
+
+for(i in 1:length(enNewsLines)){
+        if (nchar(enNewsLines[i]) > nchar(longestNews)) {
+                longestNews <- enNewsLines[i]
+                }
+            
+        } 
+
+for(i in 1:length(enTwitterLines)){
+        if (nchar(enTwitterLines[i]) > nchar(longestTwitter)) {
+                longestTwitter <- enTwitterLines[i]
+                }
+            
+        } 
+
+cols <- c("Blog", "News", "Twitter")
+result <- data.frame(cols,c(nchar(longestBlog),nchar(longestNews),nchar(longestTwitter)))
+names(result)[1] <- paste(" ")
+names(result)[2] <- paste(" ")
+result
+```
+
+Blog has 40,835. 

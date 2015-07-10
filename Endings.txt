@@ -1,0 +1,19 @@
+﻿German
+de_DE.blogs -  Software AG wiederum rettete die Hochschule 2009 vor dem Untergang.
+de_DE.news - Platz war aber schon frühzeitig gesichert.
+de_DE.twitter - ich hätte da ein Auffangbecken ;-)
+
+English
+en_US.blogs - adding some herbs to your rinse . So let’s get begin…
+en_US.news - hanging on the side of the National Library.
+en_US.twitter - queen and sex her like a pornstar!
+
+Finnish
+fi_FI.blogs - Tuhannet kiitokset kehuista!! Vastaan tuotapikaa.
+fi_FI.news - mutta kyllä mieskin on osallistunut.
+fi_FI.twitter - Satie säveltäjä muistaakseni. Kappale haussa...
+
+Russian
+ru_RU.blogs - устраивать конкурс петрунек и февронек :)
+ru_RU.news - предполагает большое нервное напряжение, стрессы…
+ru_RU.twitter - поднималась, дожди и сильный ветер.
