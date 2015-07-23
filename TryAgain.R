@@ -71,60 +71,62 @@ words <- rownames(uni.freq.prune.df)
 kwic(enSubset, words[5540], 3)
 
 #2gram
-en.analyze.dfm.2grams <- dfm(enSubset, ignoredFeatures = stopwords("english"),
-                               stem = TRUE, ngrams = 2, verbose = FALSE)
-en.analyze.dfm.two.freq <- colSums(en.analyze.dfm.2grams)
-two.freq <- sort(en.analyze.dfm.two.freq, decreasing=TRUE)
-two.freq.prune <- as.numeric()
-for (i in 1:length(two.freq)) { 
-    if (two.freq[i] > 5) {
-        two.freq.prune <- c(two.freq.prune, two.freq[i]) }
+en.analyze.dfm.bigrams <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 2, verbose = FALSE)
+en.analyze.dfm.bi.freq <- colSums(en.analyze.dfm.bigrams)
+bi.freq <- sort(en.analyze.dfm.bi.freq, decreasing=TRUE) 
+bi.freq.prune <- as.numeric()
+for (i in 1:length(bi.freq)) { 
+    if (bi.freq[i] > 10) {
+        bi.freq.prune <- c(bi.freq.prune, bi.freq[i]) }
 }
 
 #3gram
-en.analyze.dfm.3grams <- dfm(enSubset, ignoredFeatures = stopwords("english"),
-                             stem = TRUE, ngrams = 3, verbose = FALSE)
-en.analyze.dfm.three.freq <- colSums(en.analyze.dfm.3grams)
-three.freq <- sort(en.analyze.dfm.three.freq, decreasing=TRUE)
-three.freq.prune <- as.numeric()
-for (i in 1:length(three.freq)) { 
-    if (three.freq[i] > 3) {
-        three.freq.prune <- c(three.freq.prune, three.freq[i]) }
+en.analyze.dfm.trigrams <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 3, verbose = FALSE)
+en.analyze.dfm.tri.freq <- colSums(en.analyze.dfm.trigrams)
+tri.freq <- sort(en.analyze.dfm.tri.freq, decreasing=TRUE) 
+tri.freq.prune <- as.numeric()
+for (i in 1:length(tri.freq)) { 
+    if (tri.freq[i] > 10) {
+        tri.freq.prune <- c(tri.freq.prune, tri.freq[i]) }
 }
 
 #4gram
-en.analyze.dfm.4grams <- dfm(enSubset, ignoredFeatures = stopwords("english"),
-                             stem = TRUE, ngrams = 4, verbose = FALSE)
-en.analyze.dfm.four.freq <- colSums(en.analyze.dfm.4grams)
-four.freq <- sort(en.analyze.dfm.four.freq, decreasing=TRUE)
-four.freq.prune <- as.numeric()
-for (i in 1:length(four.freq)) { 
-    if (four.freq[i] > 3) {
-        four.freq.prune <- c(four.freq.prune, four.freq[i]) }
+en.analyze.dfm.quadgrams <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 4, verbose = FALSE)
+en.analyze.dfm.quad.freq <- colSums(en.analyze.dfm.quadgrams)
+quad.freq <- sort(en.analyze.dfm.quad.freq, decreasing=TRUE) 
+quad.freq.prune <- as.numeric()
+for (i in 1:length(quad.freq)) { 
+    if (quad.freq[i] > 10) {
+        quad.freq.prune <- c(quad.freq.prune, quad.freq[i]) }
 }
+
+quad.freq.prune.df <- as.data.frame(quad.freq.prune)
+words.quad <- rownames(quad.freq.prune.df)
+kwic(enSubset, "water", 3)
 
 #5gram
-en.analyze.dfm.5grams <- dfm(enSubset, ignoredFeatures = stopwords("english"),
-                             stem = TRUE, ngrams = 5, verbose = FALSE)
-en.analyze.dfm.five.freq <- colSums(en.analyze.dfm.5grams)
-five.freq <- sort(en.analyze.dfm.five.freq, decreasing=TRUE)
-five.freq.prune <- as.numeric()
-for (i in 1:length(five.freq)) { 
-    if (five.freq[i] > 2) {
-        five.freq.prune <- c(five.freq.prune, five.freq[i]) }
+en.analyze.dfm.pentagrams <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 5, verbose = FALSE)
+en.analyze.dfm.penta.freq <- colSums(en.analyze.dfm.pentagrams)
+penta.freq <- sort(en.analyze.dfm.penta.freq, decreasing=TRUE) 
+penta.freq.prune <- as.numeric()
+for (i in 1:length(penta.freq)) { 
+    if (penta.freq[i] > 10) {
+        penta.freq.prune <- c(penta.freq.prune, penta.freq[i]) }
 }
 
-#6gram
-en.analyze.dfm.6grams <- dfm(enSubset, ignoredFeatures = stopwords("english"),
-                             stem = TRUE, ngrams = 6:6, verbose = FALSE)
-en.analyze.dfm.six.freq <- colSums(en.analyze.dfm.6grams)
-six.freq <- sort(en.analyze.dfm.six.freq, decreasing=TRUE)
-six.freq.prune <- as.numeric()
-for (i in 1:length(six.freq)) { 
-    if (six.freq[i] > 1) {
-        six.freq.prune <- c(six.freq.prune, six.freq[i]) }
-    }
+source('~/datasciencecoursera/Courses/Capstone/capstoneproject/fixNgram.R')
+xlabel.pentagram <- rownames((as.data.frame(penta.freq.prune)))
+pentagram.char <- fixNgram(xlabel.pentagram, 5)
 
+#6gram
+en.analyze.dfm.hexagrams <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 6, verbose = FALSE)
+en.analyze.dfm.hexa.freq <- colSums(en.analyze.dfm.hexagrams)
+hexa.freq <- sort(en.analyze.dfm.hexa.freq, decreasing=TRUE) 
+hexa.freq.prune <- as.numeric()
+for (i in 1:length(hexa.freq)) { 
+    if (hexa.freq[i] > 10) {
+        hexa.freq.prune <- c(hexa.freq.prune, hexa.freq[i]) }
+}
 
 
 ###################################################################################################

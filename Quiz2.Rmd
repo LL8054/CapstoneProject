@@ -1,0 +1,39 @@
+---
+title: "Quiz2"
+author: "Lawrence Lau"
+date: "July 23, 2015"
+output: html_document
+---
+
+```{r}
+library(stringi)
+library(tm)
+library(quanteda)
+source('~/datasciencecoursera/Courses/Capstone/capstoneproject/ngramTailFinder.R')
+
+enBlogs <- stri_read_lines("~/datasciencecoursera/Courses/Capstone/Coursera-SwiftKey/final/en_US/en_US.blogs.txt") #user 3.437, system .496, elapsed 3.982
+enBlogsSubset <- sample(enBlogs, size=length(enBlogs)*.25, replace=FALSE) 
+```
+
+For each of the sentence fragments below use your natural language processing algorithm to predict the next word in the sentence. 
+
+1.) The guy in front of me just bought a pound of bacon, a bouquet, and a case of
+
+
+beer
+pretzels
+soda
+cheese
+
+```{r}
+trigram <- ngramTailFinder("The guy in front of me just bought a pound of bacon, a bouquet, and a case of", 3)
+
+enBlogsQuadgrams <- dfm(enBlogsSubset, ngrams = 4, verbose = TRUE)
+enBlogsQuadFreq <- colSums(enBlogsQuadgrams)
+enBlogsQuadFreq <- sort(enBlogsQuadFreq, decreasing=TRUE) 
+foundQuads <- enBlogsQuadFreq[grepl(paste(c("^", trigram), collapse=""),names(enBlogsQuadFreq))]
+
+```
+
+
+

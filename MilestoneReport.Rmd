@@ -1,0 +1,242 @@
+---
+title: "Milestone Report"
+author: "Lawrence Lau"
+date: "July 22, 2015"
+output: html_document
+---
+
+This is the Milestone Report (I almost named it Millstone Report) of the Capstone Project for Johns Hopkins's Data Scientist Certificate Program through Coursera.  The task for the Capstone Project is to create an algorithm that predicts/suggests the next word of an user input phrase.   
+
+##Data Acquisition
+The first step of the process was to download the [database of documents](http://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip) from a corpus called [HC Corpora](http://www.corpora.heliohost.org) which we'll use to train our algorithm to predict the next word.
+
+Next, the English documents containing Twitter, Blog, and News entries are read into R.
+```{r echo=FALSE}
+setwd("~/datasciencecoursera/Courses/Capstone/capstoneproject")
+path <- "~/datasciencecoursera/Courses/Capstone/Coursera-SwiftKey/final"
+```
+
+```{r message=FALSE, warning=FALSE}
+#english blogs
+enBlogs <- readLines("~/datasciencecoursera/Courses/Capstone/Coursera-SwiftKey/final/en_US/en_US.blogs.txt")
+
+#english twitter
+enTwitter <- readLines("~/datasciencecoursera/Courses/Capstone/Coursera-SwiftKey/final/en_US/en_US.twitter.txt")
+
+#english news
+enNews <- readLines("~/datasciencecoursera/Courses/Capstone/Coursera-SwiftKey/final/en_US/en_US.news.txt")
+```
+
+##Basic Summary Statistics and Exploratory Analysis
+```{r echo=FALSE}
+enBlogsLines <- length(enBlogs)
+enBlogsChars <- sum(nchar(enBlogs))
+enBlogsWords <- unlist(strsplit(enBlogs,split=" ")) 
+enBlogsNumWords <- length(enBlogsWords)
+enBlogsWordsUnique <- length(unique(enBlogsWords))
+
+enTwitterLines <- length(enTwitter)
+enTwitterChars <- sum(nchar(enTwitter))
+enTwitterWords <- unlist(strsplit(enTwitter,split=" ")) 
+enTwitterNumWords <- length(enTwitterWords)
+enTwitterWordsUnique <- length(unique(enTwitterWords))
+
+enNewsLines <- length(enNews)
+enNewsChars <- sum(nchar(enNews))
+enNewsWords <- unlist(strsplit(enNews,split=" ")) 
+enNewsNumWords <- length(enNewsWords)
+enNewsWordsUnique <- length(unique(enNewsWords))
+
+dataSummary <- data.frame(Data = character(), Line_Count = integer(), Word_Count = integer(), 
+                          Unique_Words = integer(), Total_Characters = integer(), 
+                          stringsAsFactors=FALSE)
+
+dataSummary[1,1] <- "Blogs"
+dataSummary[1,2] <- enBlogsLines
+dataSummary[1,3] <- enBlogsNumWords
+dataSummary[1,4] <- enBlogsWordsUnique
+dataSummary[1,5] <- enBlogsChars
+
+dataSummary[2,1] <- c("Twitter")
+dataSummary[2,2] <- enTwitterLines
+dataSummary[2,3] <- enTwitterNumWords
+dataSummary[2,4] <- enTwitterWordsUnique
+dataSummary[2,5] <- enTwitterChars
+
+dataSummary[3,1] <- c("News")
+dataSummary[3,2] <- enNewsLines
+dataSummary[3,3] <- enNewsNumWords
+dataSummary[3,4] <- enNewsWordsUnique
+dataSummary[3,5] <- enNewsChars
+
+library(gridExtra)
+grid.table(dataSummary)
+```
+
+
+##Process Familiarization and Exploratory Analysis with 1% Subset
+At this point I'd just been reading in the text files and doing basic word and line counts.  But even then it'd been taking a long time on my computer to do that.  So for further analysis I  subsetted each of the documents to 1% of their original size and combined it into one larger subset, enSubset.
+
+```{r message=FALSE, warning=FALSE}
+library(quanteda)
+enBlogsSubset <- sample(enBlogs, size=enBlogsLines*.01, replace=FALSE) #8992 lines
+enTwitterSubset <- sample(enTwitter, size=enTwitterLines*.01, replace=FALSE) #23601 lines
+enNewsSubset <- sample(enNews, size=enNewsLines*.01, replace=FALSE) #10102 lines
+enSubset <- c(enBlogsSubset, enTwitterSubset, enNewsSubset) #for dfm
+```
+
+Then I used the dfm() function from the Quanteda package to stem, remove stop words, lowercase, and tokenize enSubset.
+```{r warning=FALSE, message=FALSE}
+en.analyze.dfm <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE)
+```
+
+Quanteda's dfm() function is much faster than the process which uses the tm_map() function to clean the corpus which you then have to turn into a DocumentTermMatrix. Quanteda instead produces a Document-Feature Matrix which I used to explore the subset. 
+
+Here's a histogram of the 25 most frequent words (after stepping and without stop words)
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+#25 most frequent words after stemming sans stop words
+en.analyze.dfm.freqs <- colSums(as.matrix(en.analyze.dfm))
+freq.analyze <- sort(en.analyze.dfm.freqs, decreasing=TRUE)
+barplot(freq.analyze[1:25], main="25 Most Frequent Words", xlab="Words", ylab="Occurrences", col='green',
+        las=2, cex.lab=.75, yaxt="n", xaxt="n")
+xlabel.analyze <- rownames((as.data.frame(head(freq.analyze,25))))
+axis(1, cex.axis=.5, labels=xlabel.analyze, at=1:25, las=2)
+axis(2, cex.axis=.5, las=2)
+```
+
+Wordcloud() from package wordcloud is a program that creates an easily discernible visual representation of the most frequently used words.   
+```{r message=FALSE, warning=FALSE}
+#word cloud after stemming sans stop words
+library(wordcloud)
+top100words.analyze <- as.data.frame(head(freq.analyze, 100))
+wordcloud(rownames(top100words.analyze), top100words.analyze[,1], scale=c(2,.1), 
+          colors=brewer.pal(8, "Dark2"))
+```
+
+##ngrams
+Ngrams are used to identify the most commonly recurring groups of words, which are then used to train an algorithm to predict the probability of a certain word occurring next. Quanteda also creates ngrams in the dfm() function.  When I get to the actual training portion of project I aim to map unigrams, bigrams, etc all the way to decagrams (10).  For exploratory analysis purposes I decided to go up to hexagrams (6).  The dfm() function did marvelous for unigrams, bigrams, and trigrams, but when it got higher than that it ran into problems.  I'll explain more later, first unigrams, bigrams, and trigrams. 
+
+Dfm() has an argument "ngrams" which allows the user to set what type of ngrams it wants returned, in this case this is an unigram so I put 1.  Notice that stopwords are also being removed and words are being stemmed.  What's returned is a document-feature matrix which I pass to colSums to sum the number of occurrences of each unique unigram, also known as the frequencies of each unigram. After sorting the frequencies from most frequent to least frequent I prune out any unigrams that don't occur at least 10 times.  Rinse and repeat for all ngrams.
+```{r message=FALSE, warning=FALSE}
+en.analyze.dfm.unigrams <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 1, verbose = FALSE)
+en.analyze.dfm.uni.freq <- colSums(en.analyze.dfm.unigrams)
+uni.freq <- sort(en.analyze.dfm.uni.freq, decreasing=TRUE) 
+uni.freq.prune <- as.numeric()
+for (i in 1:length(uni.freq)) { 
+    if (uni.freq[i] > 10) {
+        uni.freq.prune <- c(uni.freq.prune, uni.freq[i]) }
+}
+```
+
+A histogram of the top 25 unigrams.
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+barplot(uni.freq.prune[1:25], main="25 Most Frequent Unigrams", xlab="Unigrams", ylab="Occurrences", col='#CC5500',
+        las=2, cex.lab=.75, yaxt="n", xaxt="n")
+xlabel.unigram.analyze <- rownames((as.data.frame(head(uni.freq.prune,25))))
+axis(1, cex.axis=.5, labels=xlabel.unigram.analyze, at=1:25, las=2)
+axis(2, cex.axis=.5, las=2)
+```
+
+Top 25 bigrams.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+en.analyze.dfm.bigrams <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 2, verbose = FALSE)
+en.analyze.dfm.bi.freq <- colSums(en.analyze.dfm.bigrams)
+bi.freq <- sort(en.analyze.dfm.bi.freq, decreasing=TRUE) 
+bi.freq.prune <- as.numeric()
+for (i in 1:length(bi.freq)) { 
+    if (bi.freq[i] > 10) {
+        bi.freq.prune <- c(bi.freq.prune, bi.freq[i]) }
+}
+
+barplot(bi.freq.prune[1:25], main="25 Most Frequent Bigrams", xlab="Bigrams", ylab="Occurrences", col='#CC5500',
+        las=2, cex.lab=.75, yaxt="n", xaxt="n")
+xlabel.bigram.analyze <- rownames((as.data.frame(head(bi.freq.prune,25))))
+axis(1, cex.axis=.5, labels=xlabel.bigram.analyze, at=1:25, las=2)
+axis(2, cex.axis=.5, las=2)
+```
+
+Top 25 trigrams.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+en.analyze.dfm.trigrams <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 3, verbose = FALSE)
+en.analyze.dfm.tri.freq <- colSums(en.analyze.dfm.trigrams)
+tri.freq <- sort(en.analyze.dfm.tri.freq, decreasing=TRUE) 
+tri.freq.prune <- as.numeric()
+for (i in 1:length(tri.freq)) { 
+    if (tri.freq[i] > 10) {
+        tri.freq.prune <- c(tri.freq.prune, tri.freq[i]) }
+}
+
+barplot(tri.freq.prune[1:25], main="25 Most Frequent Trigrams", xlab="Trigrams", ylab="Occurrences", col='#CC5500',
+        las=2, cex.lab=.75, yaxt="n", xaxt="n")
+xlabel.trigram.analyze <- rownames((as.data.frame(head(tri.freq.prune,25))))
+axis(1, cex.axis=.5, labels=xlabel.trigram.analyze, at=1:25, las=2)
+axis(2, cex.axis=.5, las=2)
+```
+
+So far so good.  But look what happens starting in the quadgrams and continuing onward...
+
+Top 25 Quadgrams.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+en.analyze.dfm.quadgrams <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 4, verbose = FALSE)
+en.analyze.dfm.quad.freq <- colSums(en.analyze.dfm.quadgrams)
+quad.freq <- sort(en.analyze.dfm.quad.freq, decreasing=TRUE) 
+quad.freq.prune <- as.numeric()
+for (i in 1:length(quad.freq)) { 
+    if (quad.freq[i] > 10) {
+        quad.freq.prune <- c(quad.freq.prune, quad.freq[i]) }
+}
+
+barplot(quad.freq.prune[1:25], main="25 Most Frequent Quadgrams", xlab="Quadgrams", ylab="Occurrences", col='#500000',
+        las=2, cex.lab=.75, yaxt="n", xaxt="n")
+xlabel.quadgram.analyze <- rownames((as.data.frame(head(quad.freq.prune,25))))
+axis(1, cex.axis=.5, labels=xlabel.quadgram.analyze, at=1:25, las=2)
+axis(2, cex.axis=.5, las=2)
+```
+
+Top 25 Pentagrams.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+en.analyze.dfm.pentagrams <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 5, verbose = FALSE)
+en.analyze.dfm.penta.freq <- colSums(en.analyze.dfm.pentagrams)
+penta.freq <- sort(en.analyze.dfm.penta.freq, decreasing=TRUE) 
+penta.freq.prune <- as.numeric()
+for (i in 1:length(penta.freq)) { 
+    if (penta.freq[i] > 10) {
+        penta.freq.prune <- c(penta.freq.prune, penta.freq[i]) }
+}
+
+barplot(penta.freq.prune[1:25], main="25 Most Frequent Pentagrams", xlab="Pentagrams", ylab="Occurrences", col='#500000',
+        las=2, cex.lab=.75, yaxt="n", xaxt="n")
+xlabel.pentagram.analyze <- rownames((as.data.frame(head(penta.freq.prune,25))))
+axis(1, cex.axis=.5, labels=xlabel.pentagram.analyze, at=1:25, las=2)
+axis(2, cex.axis=.5, las=2)
+```
+
+Top 25 Hexagrams.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+en.analyze.dfm.hexagrams <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 6, verbose = FALSE)
+en.analyze.dfm.hexa.freq <- colSums(en.analyze.dfm.hexagrams)
+hexa.freq <- sort(en.analyze.dfm.hexa.freq, decreasing=TRUE) 
+hexa.freq.prune <- as.numeric()
+for (i in 1:length(hexa.freq)) { 
+    if (hexa.freq[i] > 10) {
+        hexa.freq.prune <- c(hexa.freq.prune, hexa.freq[i]) }
+}
+
+barplot(hexa.freq.prune[1:25], main="25 Most Frequent Hexagrams", xlab="Hexagrams", ylab="Occurrences", col='#500000',
+        las=2, cex.lab=.75, yaxt="n", xaxt="n")
+xlabel.hexagram.analyze <- rownames((as.data.frame(head(hexa.freq.prune,25))))
+axis(1, cex.axis=.5, labels=xlabel.hexagram.analyze, at=1:25, las=2)
+axis(2, cex.axis=.5, las=2)
+```
+
+So we can see that the unigrams, bigrams, and trigrams (burnt orange histograms) came out nicely. But the others (maroon)... oh the others.  Quadgrams returned quadgrams and unigrams as well.  Pentagrams returned pentagrams, unigrams, and bigrams.  Hexagrams returned hexagrams, unigrams, bigrams, and trigrams.  I'm going to have to write a function to prune out everything that's not the ngram I'm looking for.  I do want to mention Quanteda has an actual ngram() function, but it's not a satisfatory solution because it takes forever.  
+
+##Further Plans
+After I smooth out the ngram creation process I'm going to go back and create ngrams (all the way to decagrams) and store them as an indexed data.frame that is searchable in order to predict the next word based on probability.  The prediction of the next word, given a phrase, will be determined by an algorithm that's trained by the indexed data.frame.  Should a word appear in the given phrase that isn't in the index I'll need to see if I can add a thesaurus or dictionary function that will be a susbstitute for that word.  Also I need to figure out how to weed out misspelled words.  After that, I'll produce a Shiny App that will provide a front end for a user to interface with the algorithm.  If you have any feedback please please please share.  Thanks!

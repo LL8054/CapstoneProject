@@ -1,0 +1,122 @@
+---
+title: "Replicate Ngram Issue"
+author: "Lawrence Lau"
+date: "July 22, 2015"
+output: html_document
+---
+
+Process to replicate ngram generation issue.  
+
+#Downloading documents
+These documents are what I used to generate the corpus. [database of documents](http://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip) It's 548 MB and takes about 5 minutes for me to download them.  Once downloaded, unzip and you'll see a folder called "final".  Within that folder, there are four more folders.  You can delete all of those folders except "en_US".  The files within "en_US" are what I use to build the corpus. 
+
+
+Set your working directory and path to the "final" folder. 
+```{r}
+setwd("~/datasciencecoursera/Courses/Capstone/capstoneproject")
+path <- "~/datasciencecoursera/Courses/Capstone/Coursera-SwiftKey/final"
+```
+
+
+Read in files from "en_US". 
+```{r message=FALSE, warning=FALSE}
+#english blogs
+enBlogs <- readLines("~/datasciencecoursera/Courses/Capstone/Coursera-SwiftKey/final/en_US/en_US.blogs.txt")
+
+#english twitter
+enTwitter <- readLines("~/datasciencecoursera/Courses/Capstone/Coursera-SwiftKey/final/en_US/en_US.twitter.txt")
+
+#english news
+enNews <- readLines("~/datasciencecoursera/Courses/Capstone/Coursera-SwiftKey/final/en_US/en_US.news.txt")
+```
+
+Sample 1% each of the three files to form one large subset called enSubset.
+```{r message=FALSE, warning=FALSE}
+library(quanteda)
+enBlogsSubset <- sample(enBlogs, size=length(enBlogs)*.01, replace=FALSE) #8992 lines
+enTwitterSubset <- sample(enTwitter, size=length(enTwitter)*.01, replace=FALSE) #23601 lines
+enNewsSubset <- sample(enNews, size=length(enNews)*.01, replace=FALSE) #10102 lines
+enSubset <- c(enBlogsSubset, enTwitterSubset, enNewsSubset) #for dfm
+```
+
+Create unigrams from enSubset and display top 25 most occurring unigrams.
+```{r message=FALSE, warning=FALSE}
+en.analyze.dfm.unigrams <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 1, verbose = FALSE)
+en.analyze.dfm.uni.freq <- colSums(en.analyze.dfm.unigrams)
+uni.freq <- sort(en.analyze.dfm.uni.freq, decreasing=TRUE) 
+uni.freq.prune <- as.numeric()
+for (i in 1:length(uni.freq)) { 
+    if (uni.freq[i] > 10) {
+        uni.freq.prune <- c(uni.freq.prune, uni.freq[i]) }
+}
+uni.freq.prune[1:25]
+```
+
+Create bigrams from enSubset and display top 25 most occurring bigrams.
+```{r message=FALSE, warning=FALSE}
+en.analyze.dfm.bigrams <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 2, verbose = FALSE)
+en.analyze.dfm.bi.freq <- colSums(en.analyze.dfm.bigrams)
+bi.freq <- sort(en.analyze.dfm.bi.freq, decreasing=TRUE) 
+bi.freq.prune <- as.numeric()
+for (i in 1:length(bi.freq)) { 
+    if (bi.freq[i] > 10) {
+        bi.freq.prune <- c(bi.freq.prune, bi.freq[i]) }
+}
+bi.freq.prune[1:25]
+```
+
+Create trigrams from enSubset and display top 25 most occurring trigrams.
+```{r message=FALSE, warning=FALSE}
+en.analyze.dfm.trigrams <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 3, verbose = FALSE)
+en.analyze.dfm.tri.freq <- colSums(en.analyze.dfm.trigrams)
+tri.freq <- sort(en.analyze.dfm.tri.freq, decreasing=TRUE) 
+tri.freq.prune <- as.numeric()
+for (i in 1:length(tri.freq)) { 
+    if (tri.freq[i] > 10) {
+        tri.freq.prune <- c(tri.freq.prune, tri.freq[i]) }
+}
+tri.freq.prune[1:25]
+```
+
+Create quadgrams from enSubset and display top 25 most occurring quadgrams.
+```{r message=FALSE, warning=FALSE}
+en.analyze.dfm.quadgrams <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 4, verbose = FALSE)
+en.analyze.dfm.quad.freq <- colSums(en.analyze.dfm.quadgrams)
+quad.freq <- sort(en.analyze.dfm.quad.freq, decreasing=TRUE) 
+quad.freq.prune <- as.numeric()
+for (i in 1:length(quad.freq)) { 
+    if (quad.freq[i] > 10) {
+        quad.freq.prune <- c(quad.freq.prune, quad.freq[i]) }
+}
+quad.freq.prune[1:25]
+```
+
+Create pentagrams from enSubset and display top 25 most occurring pentagrams.
+```{r message=FALSE, warning=FALSE}
+en.analyze.dfm.pentagrams <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 5, verbose = FALSE)
+en.analyze.dfm.penta.freq <- colSums(en.analyze.dfm.pentagrams)
+penta.freq <- sort(en.analyze.dfm.penta.freq, decreasing=TRUE) 
+penta.freq.prune <- as.numeric()
+for (i in 1:length(penta.freq)) { 
+    if (penta.freq[i] > 10) {
+        penta.freq.prune <- c(penta.freq.prune, penta.freq[i]) }
+}
+penta.freq.prune[1:25]
+```
+
+Create hexagrams from enSubset and display top 25 most occurring hexagrams. 
+```{r warning=FALSE, message=FALSE}
+en.analyze.dfm.hexagrams <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 6, verbose = FALSE)
+en.analyze.dfm.hexa.freq <- colSums(en.analyze.dfm.hexagrams)
+hexa.freq <- sort(en.analyze.dfm.hexa.freq, decreasing=TRUE) 
+hexa.freq.prune <- as.numeric()
+for (i in 1:length(hexa.freq)) { 
+    if (hexa.freq[i] > 10) {
+        hexa.freq.prune <- c(hexa.freq.prune, hexa.freq[i]) }
+}
+hexa.freq.prune[1:25]
+```
+
+You'll notice the unigrams, bigrams, and trigrams each consisted of what they were supposed to.  However quadgrams consisted of quadgrams and unigrams, pentagrams consisted of pentagrams, unigrams, and bigrams, and hexagrams consisted of hexagrams, unigrams, bigrams, and trigrams.  
+
+I'm not sure why it's doing that.  I know there's also an ngram() function in quanteda but it takes too long to run.  I've started working on a way to prune each of the ngrams of everything but that particular ngram but it's a bit brutish.  
