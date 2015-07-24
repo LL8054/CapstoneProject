@@ -100,12 +100,12 @@ for (i in 1:length(uni.freq)) {
         uni.freq.prune &lt;- c(uni.freq.prune, uni.freq[i]) }
 }
 uni.freq.prune[1:25]</code></pre>
-<pre><code>##  will   one  like   get  just  said  time    go   can  year   day  love 
-##  3368  3220  3085  3083  3038  3008  2783  2765  2524  2319  2302  2085 
-##  make   new  good  work  know   now peopl  want   see think  back  look 
-##  2085  1893  1872  1870  1861  1813  1668  1640  1638  1619  1605  1579 
-##   say 
-##  1546</code></pre>
+<pre><code>##   one  will  like  just   get  said  time    go  year   can   day  make 
+##  3198  3160  3048  3045  3016  3008  2719  2646  2500  2420  2310  2156 
+##  love   new  good  know   now  work  want   see peopl   say  look  come 
+##  2017  1945  1861  1816  1800  1710  1673  1670  1625  1605  1542  1511 
+## think 
+##  1509</code></pre>
 <p>Create bigrams from enSubset and display top 25 most occurring bigrams.</p>
 <pre class="r"><code>en.analyze.dfm.bigrams &lt;- dfm(enSubset, ignoredFeatures = stopwords(&quot;english&quot;), stem = TRUE, ngrams = 2, verbose = FALSE)
 en.analyze.dfm.bi.freq &lt;- colSums(en.analyze.dfm.bigrams)
@@ -117,13 +117,13 @@ for (i in 1:length(bi.freq)) {
 }
 bi.freq.prune[1:25]</code></pre>
 <pre><code>##    of_th    in_th    to_th   for_th    on_th     to_b    at_th   and_th 
-##     4410     4129     2163     1989     1943     1680     1472     1280 
-##     in_a  with_th     is_a    for_a     it_i    it_wa    and_i  from_th 
-##     1177     1104     1054      986      973      955      915      887 
-##    i_hav   that_i     i_wa   will_b going_to     of_a   with_a   have_a 
-##      869      853      850      839      836      822      803      753 
-##    is_th 
-##      746</code></pre>
+##     4407     4123     2129     1913     1856     1733     1482     1314 
+##     in_a  with_th     is_a    and_i    it_wa    for_a    i_hav  from_th 
+##     1155     1098     1031      988      984      938      909      902 
+##     it_i     i_wa   that_i   will_b   with_a going_to     i_am     of_a 
+##      898      878      864      819      813      808      752      750 
+##   one_of 
+##      744</code></pre>
 <p>Create trigrams from enSubset and display top 25 most occurring trigrams.</p>
 <pre class="r"><code>en.analyze.dfm.trigrams &lt;- dfm(enSubset, ignoredFeatures = stopwords(&quot;english&quot;), stem = TRUE, ngrams = 3, verbose = FALSE)
 en.analyze.dfm.tri.freq &lt;- colSums(en.analyze.dfm.trigrams)
@@ -135,23 +135,23 @@ for (i in 1:length(tri.freq)) {
 }
 tri.freq.prune[1:25]</code></pre>
 <pre><code>##          one_of_th           a_lot_of      thanks_for_th 
-##                328                276                226 
-##         going_to_b            to_be_a          out_of_th 
-##                190                176                168 
-##         the_end_of          i_want_to         be_able_to 
-##                158                157                150 
-##          as_well_a         part_of_th           it_was_a 
-##                144                141                133 
-##         some_of_th           i_have_a      thank_you_for 
-##                130                122                113 
-##      the_first_tim          i_have_to        you_have_to 
-##                110                109                109 
-##        the_rest_of        is_going_to looking_forward_to 
-##                108                107                104 
-##          end_of_th          this_is_a      the_fact_that 
-##                103                103                102 
+##                341                313                213 
+##            to_be_a         going_to_b          i_want_to 
+##                197                190                166 
+##          out_of_th         the_end_of          as_well_a 
+##                156                150                142 
+##         be_able_to           it_was_a           i_have_a 
+##                139                128                123 
+##         some_of_th        is_going_to        the_rest_of 
+##                118                117                117 
+##          end_of_th looking_forward_to          i_have_to 
+##                109                103                102 
+##           to_go_to         part_of_th      the_first_tim 
+##                101                 97                 96 
+##        a_couple_of         this_is_th        you_have_to 
+##                 94                 94                 92 
 ##         i_love_you 
-##                100</code></pre>
+##                 91</code></pre>
 <p>Create quadgrams from enSubset and display top 25 most occurring quadgrams.</p>
 <pre class="r"><code>en.analyze.dfm.quadgrams &lt;- dfm(enSubset, ignoredFeatures = stopwords(&quot;english&quot;), stem = TRUE, ngrams = 4, verbose = FALSE)
 en.analyze.dfm.quad.freq &lt;- colSums(en.analyze.dfm.quadgrams)
@@ -162,24 +162,24 @@ for (i in 1:length(quad.freq)) {
         quad.freq.prune &lt;- c(quad.freq.prune, quad.freq[i]) }
 }
 quad.freq.prune[1:25]</code></pre>
-<pre><code>##                 thank         the_end_of_th         at_the_end_of 
-##                   137                    86                    72 
-##     for_the_first_tim        the_rest_of_th                  love 
-##                    72                    71                    68 
-##                follow                  good thanks_for_the_follow 
-##                    65                    64                    59 
-##         is_going_to_b       at_the_same_tim         to_be_able_to 
-##                    56                    54                    52 
-##                 happi      in_the_middle_of       one_of_the_most 
-##                    48                    47                    43 
-##             thank_you      thank_you_for_th          is_one_of_th 
-##                    42                    42                    40 
-##      when_it_comes_to                   yes                    go 
-##                    40                    37                    36 
-##         going_to_be_a       one_of_the_best         as_well_as_th 
-##                    35                    33                    32 
-##      the_middle_of_th 
-##                    31</code></pre>
+<pre><code>##                 thank         the_end_of_th        the_rest_of_th 
+##                   138                    89                    79 
+##         at_the_end_of                  good                follow 
+##                    69                    68                    66 
+##                  love       at_the_same_tim                 happi 
+##                    66                    63                    58 
+##       one_of_the_most thanks_for_the_follow     for_the_first_tim 
+##                    56                    56                    54 
+##         is_going_to_b      when_it_comes_to     thanks_for_the_rt 
+##                    53                    53                    45 
+##          is_one_of_th             thank_you         going_to_be_a 
+##                    44                    44                    38 
+##         to_be_able_to                    go                    oh 
+##                    37                    36                    36 
+##        if_you_want_to      can't_wait_to_se         i_am_going_to 
+##                    35                    33                    33 
+##     one_of_my_favorit 
+##                    33</code></pre>
 <p>Create pentagrams from enSubset and display top 25 most occurring pentagrams.</p>
 <pre class="r"><code>en.analyze.dfm.pentagrams &lt;- dfm(enSubset, ignoredFeatures = stopwords(&quot;english&quot;), stem = TRUE, ngrams = 5, verbose = FALSE)
 en.analyze.dfm.penta.freq &lt;- colSums(en.analyze.dfm.pentagrams)
@@ -191,18 +191,18 @@ for (i in 1:length(penta.freq)) {
 }
 penta.freq.prune[1:25]</code></pre>
 <pre><code>##            thank             love           follow             good 
-##              242              129              110               98 
-##       thanks_for            happi               go        thank_you 
-##               77               75               65               64 
-##              lol                u              day           for_th 
-##               58               58               57               54 
-##              yes             back    thanks_for_th at_the_end_of_th 
-##               54               48               46               45 
-##             time            i_lov             like             just 
-##               45               41               41               40 
-##              new                d             know               oh 
-##               40               38               37               36 
-##            great 
+##              237              123              113              110 
+##            happi       thanks_for           for_th              lol 
+##               85               78               65               59 
+##               go        thank_you    thanks_for_th              day 
+##               58               58               58               57 
+##               oh                d             back                u 
+##               57               51               48               47 
+##             time at_the_end_of_th             morn              get 
+##               46               45               41               40 
+##             miss           welcom            you'r              one 
+##               38               38               37               36 
+##            i_lov 
 ##               35</code></pre>
 <p>Create hexagrams from enSubset and display top 25 most occurring hexagrams.</p>
 <pre class="r"><code>en.analyze.dfm.hexagrams &lt;- dfm(enSubset, ignoredFeatures = stopwords(&quot;english&quot;), stem = TRUE, ngrams = 6, verbose = FALSE)
@@ -214,16 +214,16 @@ for (i in 1:length(hexa.freq)) {
         hexa.freq.prune &lt;- c(hexa.freq.prune, hexa.freq[i]) }
 }
 hexa.freq.prune[1:25]</code></pre>
-<pre><code>##         thank          love        follow          good    thanks_for 
-##           342           176           145           134           121 
-##            go        for_th         happi           day             u 
-##           120           100            97            95            88 
-##           lol     thank_you          just          like thanks_for_th 
-##            87            87            76            73            73 
-##          back          time           yes         great         i_lov 
-##            70            69            69            63            59 
-##           get             d           new          know         today 
-##            57            56            56            54            52</code></pre>
+<pre><code>##         thank          love          good        follow    thanks_for 
+##           315           178           154           146           112 
+##         happi        for_th            go           day     thank_you 
+##           107           104            99            92            81 
+## thanks_for_th           lol            oh           get          back 
+##            80            79            75            71            70 
+##             u          just          time             d           new 
+##            70            67            67            61            59 
+##           one         you'r          like          miss          morn 
+##            59            57            56            55            55</code></pre>
 <p>You’ll notice the unigrams, bigrams, and trigrams each consisted of what they were supposed to. However quadgrams consisted of quadgrams and unigrams, pentagrams consisted of pentagrams, unigrams, and bigrams, and hexagrams consisted of hexagrams, unigrams, bigrams, and trigrams.</p>
 <p>I’m not sure why it’s doing that. I know there’s also an ngram() function in quanteda but it takes too long to run. I’ve started working on a way to prune each of the ngrams of everything but that particular ngram but it’s a bit brutish.</p>
 </div>

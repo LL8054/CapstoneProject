@@ -79,6 +79,7 @@ At this point I'd just been reading in the text files and doing basic word and l
 
 ```{r message=FALSE, warning=FALSE}
 library(quanteda)
+set.seed(100)
 enBlogsSubset <- sample(enBlogs, size=enBlogsLines*.01, replace=FALSE) #8992 lines
 enTwitterSubset <- sample(enTwitter, size=enTwitterLines*.01, replace=FALSE) #23601 lines
 enNewsSubset <- sample(enNews, size=enNewsLines*.01, replace=FALSE) #10102 lines
@@ -121,12 +122,14 @@ Dfm() has an argument "ngrams" which allows the user to set what type of ngrams 
 ```{r message=FALSE, warning=FALSE}
 en.analyze.dfm.unigrams <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 1, verbose = FALSE)
 en.analyze.dfm.uni.freq <- colSums(en.analyze.dfm.unigrams)
-uni.freq <- sort(en.analyze.dfm.uni.freq, decreasing=TRUE) 
-uni.freq.prune <- as.numeric()
-for (i in 1:length(uni.freq)) { 
-    if (uni.freq[i] > 10) {
-        uni.freq.prune <- c(uni.freq.prune, uni.freq[i]) }
-}
+uni.freq <- topfeatures(en.analyze.dfm.unigrams, n = nfeature(en.analyze.dfm.unigrams))
+#uni.freq <- sort(en.analyze.dfm.uni.freq, decreasing=TRUE) 
+uni.freq.prune <- uni.freq[uni.freq > 10] #vectorize selection for feature frequency instead of looping
+#uni.freq.prune <- as.numeric()
+#for (i in 1:length(uni.freq)) { 
+#    if (uni.freq[i] > 10) {
+#        uni.freq.prune <- c(uni.freq.prune, uni.freq[i]) }
+#}
 ```
 
 A histogram of the top 25 unigrams.
@@ -144,12 +147,14 @@ Top 25 bigrams.
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 en.analyze.dfm.bigrams <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 2, verbose = FALSE)
 en.analyze.dfm.bi.freq <- colSums(en.analyze.dfm.bigrams)
-bi.freq <- sort(en.analyze.dfm.bi.freq, decreasing=TRUE) 
-bi.freq.prune <- as.numeric()
-for (i in 1:length(bi.freq)) { 
-    if (bi.freq[i] > 10) {
-        bi.freq.prune <- c(bi.freq.prune, bi.freq[i]) }
-}
+bi.freq <- topfeatures(en.analyze.dfm.bigrams, n = nfeature(en.analyze.dfm.bigrams))
+#bi.freq <- sort(en.analyze.dfm.bi.freq, decreasing=TRUE) 
+bi.freq.prune <- bi.freq[bi.freq > 10]
+#bi.freq.prune <- as.numeric()
+#for (i in 1:length(bi.freq)) { 
+#    if (bi.freq[i] > 10) {
+#        bi.freq.prune <- c(bi.freq.prune, bi.freq[i]) }
+#}
 
 barplot(bi.freq.prune[1:25], main="25 Most Frequent Bigrams", xlab="Bigrams", ylab="Occurrences", col='#CC5500',
         las=2, cex.lab=.75, yaxt="n", xaxt="n")
@@ -163,12 +168,14 @@ Top 25 trigrams.
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 en.analyze.dfm.trigrams <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 3, verbose = FALSE)
 en.analyze.dfm.tri.freq <- colSums(en.analyze.dfm.trigrams)
-tri.freq <- sort(en.analyze.dfm.tri.freq, decreasing=TRUE) 
-tri.freq.prune <- as.numeric()
-for (i in 1:length(tri.freq)) { 
-    if (tri.freq[i] > 10) {
-        tri.freq.prune <- c(tri.freq.prune, tri.freq[i]) }
-}
+tri.freq <- topfeatures(en.analyze.dfm.trigrams, n = nfeature(en.analyze.dfm.trigrams))
+#tri.freq <- sort(en.analyze.dfm.tri.freq, decreasing=TRUE) 
+tri.freq.prune <- tri.freq[tri.freq > 5]
+#tri.freq.prune <- as.numeric()
+#for (i in 1:length(tri.freq)) { 
+#    if (tri.freq[i] > 10) {
+#        tri.freq.prune <- c(tri.freq.prune, tri.freq[i]) }
+#}
 
 barplot(tri.freq.prune[1:25], main="25 Most Frequent Trigrams", xlab="Trigrams", ylab="Occurrences", col='#CC5500',
         las=2, cex.lab=.75, yaxt="n", xaxt="n")
@@ -184,12 +191,14 @@ Top 25 Quadgrams.
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 en.analyze.dfm.quadgrams <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 4, verbose = FALSE)
 en.analyze.dfm.quad.freq <- colSums(en.analyze.dfm.quadgrams)
-quad.freq <- sort(en.analyze.dfm.quad.freq, decreasing=TRUE) 
-quad.freq.prune <- as.numeric()
-for (i in 1:length(quad.freq)) { 
-    if (quad.freq[i] > 10) {
-        quad.freq.prune <- c(quad.freq.prune, quad.freq[i]) }
-}
+quad.freq <- topfeatures(en.analyze.dfm.quadgrams, n = nfeature(en.analyze.dfm.quadgrams))
+#quad.freq <- sort(en.analyze.dfm.quad.freq, decreasing=TRUE) 
+quad.freq.prune <- quad.freq[quad.freq > 2]
+#quad.freq.prune <- as.numeric()
+#for (i in 1:length(quad.freq)) { 
+#    if (quad.freq[i] > 10) {
+#        quad.freq.prune <- c(quad.freq.prune, quad.freq[i]) }
+#}
 
 barplot(quad.freq.prune[1:25], main="25 Most Frequent Quadgrams", xlab="Quadgrams", ylab="Occurrences", col='#500000',
         las=2, cex.lab=.75, yaxt="n", xaxt="n")
@@ -203,12 +212,14 @@ Top 25 Pentagrams.
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 en.analyze.dfm.pentagrams <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 5, verbose = FALSE)
 en.analyze.dfm.penta.freq <- colSums(en.analyze.dfm.pentagrams)
-penta.freq <- sort(en.analyze.dfm.penta.freq, decreasing=TRUE) 
-penta.freq.prune <- as.numeric()
-for (i in 1:length(penta.freq)) { 
-    if (penta.freq[i] > 10) {
-        penta.freq.prune <- c(penta.freq.prune, penta.freq[i]) }
-}
+penta.freq <- topfeatures(en.analyze.dfm.pentagrams, n = nfeature(en.analyze.dfm.pentagrams))
+#penta.freq <- sort(en.analyze.dfm.penta.freq, decreasing=TRUE) 
+penta.freq.prune <- penta.freq[penta.freq > 2]
+#penta.freq.prune <- as.numeric()
+#for (i in 1:length(penta.freq)) { 
+#    if (penta.freq[i] > 10) {
+#        penta.freq.prune <- c(penta.freq.prune, penta.freq[i]) }
+#}
 
 barplot(penta.freq.prune[1:25], main="25 Most Frequent Pentagrams", xlab="Pentagrams", ylab="Occurrences", col='#500000',
         las=2, cex.lab=.75, yaxt="n", xaxt="n")
@@ -222,12 +233,14 @@ Top 25 Hexagrams.
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 en.analyze.dfm.hexagrams <- dfm(enSubset, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 6, verbose = FALSE)
 en.analyze.dfm.hexa.freq <- colSums(en.analyze.dfm.hexagrams)
-hexa.freq <- sort(en.analyze.dfm.hexa.freq, decreasing=TRUE) 
-hexa.freq.prune <- as.numeric()
-for (i in 1:length(hexa.freq)) { 
-    if (hexa.freq[i] > 10) {
-        hexa.freq.prune <- c(hexa.freq.prune, hexa.freq[i]) }
-}
+hexa.freq <- topfeatures(en.analyze.dfm.hexagrams, n = nfeature(en.analyze.dfm.hexagrams))
+#hexa.freq <- sort(en.analyze.dfm.hexa.freq, decreasing=TRUE) 
+hexa.freq.prune <- hexa.freq[hexa.freq > 2]
+#hexa.freq.prune <- as.numeric()
+#for (i in 1:length(hexa.freq)) { 
+#    if (hexa.freq[i] > 10) {
+#        hexa.freq.prune <- c(hexa.freq.prune, hexa.freq[i]) }
+#}
 
 barplot(hexa.freq.prune[1:25], main="25 Most Frequent Hexagrams", xlab="Hexagrams", ylab="Occurrences", col='#500000',
         las=2, cex.lab=.75, yaxt="n", xaxt="n")

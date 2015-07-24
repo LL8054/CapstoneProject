@@ -10,8 +10,11 @@ library(stringi)
 library(tm)
 library(quanteda)
 source('~/datasciencecoursera/Courses/Capstone/capstoneproject/ngramTailFinder.R')
+source('~/datasciencecoursera/Courses/Capstone/capstoneproject/NextWordPredictor.R')
+source('~/datasciencecoursera/Courses/Capstone/capstoneproject/ngramTailFinder1.R')
 
 enBlogs <- stri_read_lines("~/datasciencecoursera/Courses/Capstone/Coursera-SwiftKey/final/en_US/en_US.blogs.txt") #user 3.437, system .496, elapsed 3.982
+set.seed(100)
 enBlogsSubset <- sample(enBlogs, size=length(enBlogs)*.25, replace=FALSE) 
 ```
 
