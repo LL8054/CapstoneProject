@@ -5,11 +5,13 @@ library(tm)
 library(quanteda)
 
 NextWordPredictor <- function(input=char(), n=integer(), a=char()){
+    #next three lines of code will be removed when CreateEnBlogsNgrams() is up and running
     enBlogs <- stri_read_lines("~/datasciencecoursera/Courses/Capstone/Coursera-SwiftKey/final/en_US/en_US.blogs.txt") #user 3.437, system .496, elapsed 3.982
     set.seed(100)
     enBlogsSubset <- sample(enBlogs, size=length(enBlogs)*.25, replace=FALSE)
     
     foundTail <- ngramTailFinder(input, n, a)
+    #next line of code will be removed when CreateEnBlogsNgrams() is up and running
     enBlogsGrams <- dfm(enBlogsSubset, ngrams = n+1, verbose = TRUE)
     enBlogsGramsFreq <- topfeatures(enBlogsGrams, n = nfeature(enBlogsGrams)) 
     enBlogsGramsFreq.prune <- enBlogsGramsFreq[enBlogsGramsFreq > 1]

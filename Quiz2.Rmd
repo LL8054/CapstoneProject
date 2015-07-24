@@ -12,10 +12,6 @@ library(quanteda)
 source('~/datasciencecoursera/Courses/Capstone/capstoneproject/ngramTailFinder.R')
 source('~/datasciencecoursera/Courses/Capstone/capstoneproject/NextWordPredictor.R')
 source('~/datasciencecoursera/Courses/Capstone/capstoneproject/ngramTailFinder1.R')
-
-enBlogs <- stri_read_lines("~/datasciencecoursera/Courses/Capstone/Coursera-SwiftKey/final/en_US/en_US.blogs.txt") #user 3.437, system .496, elapsed 3.982
-set.seed(100)
-enBlogsSubset <- sample(enBlogs, size=length(enBlogs)*.25, replace=FALSE) 
 ```
 
 For each of the sentence fragments below use your natural language processing algorithm to predict the next word in the sentence. 
@@ -29,14 +25,61 @@ soda
 cheese
 
 ```{r}
-trigram <- ngramTailFinder("The guy in front of me just bought a pound of bacon, a bouquet, and a case of", 3)
+NextWordPredictor("The guy in front of me just bought a pound of bacon, a bouquet, and a case of", 3, " ")
+```
 
-enBlogsQuadgrams <- dfm(enBlogsSubset, ngrams = 4, verbose = TRUE)
-enBlogsQuadFreq <- colSums(enBlogsQuadgrams)
-enBlogsQuadFreq <- sort(enBlogsQuadFreq, decreasing=TRUE) 
-foundQuads <- enBlogsQuadFreq[grepl(paste(c("^", trigram), collapse=""),names(enBlogsQuadFreq))]
+beer
 
+2.) You're the reason why I smile everyday. Can you follow me please? It would mean the
+
+
+best
+universe
+world
+most
+
+```{r}
+NextWordPredictor("You're the reason why I smile everyday. Can you follow me please? It would mean the", 4, " ")
 ```
 
 
 
+3.)  Hey sunshine, can you follow me and make me the
+
+
+happiest
+smelliest
+bluest
+saddest
+
+```{r}
+NextWordPredictor("Hey sunshine, can you follow me and make me the", 4, " ")
+```
+
+
+
+4.)  Very early observations on the Bills game: Offense still struggling but the
+
+
+defense
+players
+crowd
+referees
+
+```{r}
+NextWordPredictor("Very early observations on the Bills game: Offense still struggling but the", 4, " ")
+```
+
+
+
+5.)  Go on a romantic date at the
+
+
+beach
+grocery
+movies
+mall
+
+```{r}
+NextWordPredictor("Go on a romantic date at the", 4, " ")
+```
