@@ -16,13 +16,25 @@ NextWordPredictor <- function(input=char(), n=integer(), a=char()){
     set.seed(100)
     enBlogsSubset <- sample(enBlogs, size=length(enBlogs)*.01, replace=FALSE)
     
+    #next three lines of code will be removed when CreateEnTwitterNgrams() is up and running
+    enTwitter <- readLines("~/datasciencecoursera/Courses/Capstone/Coursera-SwiftKey/final/en_US/en_US.twitter.txt")
+    set.seed(100)
+    enTwitterSubset <- sample(enTwitter, size=length(enTwitter)*.01, replace=FALSE)
+    
+    #next three lines of code will be removed when CreateEnNewsNgrams() is up and running
+    enNews <- stri_read_lines("~/datasciencecoursera/Courses/Capstone/Coursera-SwiftKey/final/en_US/en_US.news.txt")
+    set.seed(100)
+    enNewsSubset <- sample(enNews, size=length(enNews)*.01, replace=FALSE)
+    
     foundTail <- ngramTailFinder(input, n, a)
-    #next line of code will be removed when CreateEnBlogsNgrams() is up and running
-    enBlogsGrams <- dfm(enBlogsSubset, ngrams = n+1, verbose = TRUE)
-    enBlogsGramsFreq <- topfeatures(enBlogsGrams, n = nfeature(enBlogsGrams)) 
+    subset <- c(enBlogsSubset, enTwitterSubset, enNewsSubset)
+    grams <- dfm(subset, ngrams = n+1, verbose = TRUE)
+    
+    
+    gramsFreq <- topfeatures(grams, n = nfeature(grams)) 
     #enBlogsGramsFreq.prune <- enBlogsGramsFreq[enBlogsGramsFreq > 1]
     #foundGrams <- enBlogsGramsFreq.prune[grepl(paste(c("^", foundTail), collapse=""),names(enBlogsGramsFreq.prune))]
-    foundGrams <- enBlogsGramsFreq[grepl(paste(c("^", foundTail), collapse=""),names(enBlogsGramsFreq))]
+    foundGrams <- gramsFreq[grepl(paste(c("^", foundTail), collapse=""),names(gramsFreq))]
     if(length(foundGrams) < 1) {
         
         ###########################################################################################
@@ -69,23 +81,23 @@ NextWordPredictor <- function(input=char(), n=integer(), a=char()){
         ###########################################################################################
         ################## build stemmed and stopped trigrams from corpus subset ##################
         ###########################################################################################
-        enBlogsSubset2 <- strsplit(enBlogsSubset, "[,.:;?!]\\s*")
-        enBlogsCorpus <- Corpus(VectorSource(enBlogsSubset2))
-        enBlogsClean <- tm_map(enBlogsCorpus, removeNumbers)
-        enBlogsClean <- tm_map(enBlogsClean, removeWords, stopwords("english")) 
-        enBlogsClean <- tm_map(enBlogsClean, removePunctuation)
-        enBlogsClean <- tm_map(enBlogsClean, content_transformer(tolower))
+        subset2 <- strsplit(subset, "[,.:;?!]\\s*")
+        corpus <- Corpus(VectorSource(subset2))
+        clean <- tm_map(corpus, removeNumbers)
+        clean <- tm_map(clean, removeWords, stopwords("english")) 
+        clean <- tm_map(clean, removePunctuation)
+        clean <- tm_map(clean, content_transformer(tolower))
         swearWords <- readLines("~/datasciencecoursera/Courses/Capstone/CapstoneProject/swearWords.csv") # as downloaded from http://www.bannedwordlist.com/
         swearWords <- paste(swearWords[1:length(swearWords)])
-        enBlogsClean <- tm_map(enBlogsClean, removeWords, swearWords)
-        enBlogsClean <- tm_map(enBlogsClean, stripWhitespace)
+        clean <- tm_map(clean, removeWords, swearWords)
+        clean <- tm_map(clean, stripWhitespace)
         
-        blogsDF <- data.frame(text=unlist(sapply(enBlogsClean, `[`, "content")), stringsAsFactors=F)
-        blogsClean <- unlist(strsplit(blogsDF[,1], " "))
-        blogsClean <- paste(blogsClean, collapse = " ")
-        blogsCleanTrigrams <- dfm(blogsClean, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 3, verbose = FALSE)
-        blogsCleanTrigramsFreq <- colSums(blogsCleanTrigrams)
-        blogsCleanTrigramsFreq <- sort(blogsCleanTrigramsFreq, decreasing=TRUE) 
+        DF <- data.frame(text=unlist(sapply(clean, `[`, "content")), stringsAsFactors=F)
+        allClean <- unlist(strsplit(DF[,1], " "))
+        allClean <- paste(allClean, collapse = " ")
+        allCleanTrigrams <- dfm(allClean, ignoredFeatures = stopwords("english"), stem = TRUE, ngrams = 3, verbose = FALSE)
+        allCleanTrigramsFreq <- colSums(allCleanTrigrams)
+        allCleanTrigramsFreq <- sort(allCleanTrigramsFreq, decreasing=TRUE) 
         #next 5 lines are unnecessary if i don't need to tokenize through DTM()
         #options(mc.cores = 1)
         #require(tm)
@@ -100,10 +112,10 @@ NextWordPredictor <- function(input=char(), n=integer(), a=char()){
         #       bounds = list(global = c(1, Inf)), wordLengths=c(3, Inf)))
         #triBlogsFreq <- sort(colSums(as.matrix(triBlogs)), decreasing = TRUE)
         
-        failBlogsTrigrams <- blogsCleanTrigramsFreq
+        failTrigrams <- allCleanTrigramsFreq
         
-        foundFailGrams <- failBlogsTrigrams[grepl(paste(c("^", foundFailTail), collapse=""),
-                                                  names(failBlogsTrigrams))]
+        foundFailGrams <- failTrigrams[grepl(paste(c("^", foundFailTail), collapse=""),
+                                                  names(failTrigrams))]
         
         if(length(foundFailGrams) < 1) {
             cout <- "sorry, no word predicted.  try again with a shorter ngram."

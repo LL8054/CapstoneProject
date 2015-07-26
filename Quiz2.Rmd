@@ -67,10 +67,10 @@ crowd
 referees
 
 ```{r}
-system.time(NextWordPredictor("Very early observations on the Bills game: Offense still struggling but the", 3, " "))
+system.time(NextWordPredictor("offense", 1, " "))
 ```
 
-
+defense
 
 5.)  Go on a romantic date at the
 
@@ -121,10 +121,10 @@ ears
 fingers
 
 ```{r}
-NextWordPredictor("After the ice bucket challenge Louis will push his long wet hair out of his eyes with his little", 2, " ")
+NextWordPredictor("After the ice bucket challenge Louis will push his long wet hair out of his eyes with his little", 4, " ")
 ```
 
-ears???
+ears
 
 9.)  Be grateful for the good times and keep the faith during the
 
@@ -134,7 +134,7 @@ hard
 worse
 
 ```{r}
-NextWordPredictor("Be grateful for the good times and keep the faith during the", 2, " ")
+NextWordPredictor("Be grateful for the good times and keep the faith during the", 4, " ")
 ```
 
 
