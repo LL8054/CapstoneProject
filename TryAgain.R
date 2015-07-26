@@ -12,7 +12,7 @@ path <- "~/datasciencecoursera/Courses/Capstone/Coursera-SwiftKey/final"
 enBlogs <- readLines("~/datasciencecoursera/Courses/Capstone/Coursera-SwiftKey/final/en_US/en_US.blogs.txt")
 enBlogsLines <- length(enBlogs)
 enBlogsChars <- sum(nchar(enBlogs))
-enBlogsWords <- unlist(strsplit(enBlogs,split=" ")) 
+enBlogsWords <- unlist(strsplit(enBlogs," ")) 
 enBlogsNumWords <- length(enBlogsWords)
 enBlogsWordsUnique <- length(unique(enBlogsWords))
 

@@ -39,10 +39,10 @@ world
 most
 
 ```{r}
-NextWordPredictor("You're the reason why I smile everyday. Can you follow me please? It would mean the", 4, " ")
+NextWordPredictor("You're the reason why I smile everyday. Can you follow me please? It would mean the", 3, " ")
 ```
 
-
+world
 
 3.)  Hey sunshine, can you follow me and make me the
 
@@ -53,10 +53,10 @@ bluest
 saddest
 
 ```{r}
-NextWordPredictor("Hey sunshine, can you follow me and make me the", 4, " ")
+NextWordPredictor("Hey sunshine, can you follow me and make me the", 3, " ")
 ```
 
-
+happiest
 
 4.)  Very early observations on the Bills game: Offense still struggling but the
 
@@ -67,7 +67,7 @@ crowd
 referees
 
 ```{r}
-NextWordPredictor("Very early observations on the Bills game: Offense still struggling but the", 4, " ")
+system.time(NextWordPredictor("Very early observations on the Bills game: Offense still struggling but the", 3, " "))
 ```
 
 
@@ -81,5 +81,73 @@ movies
 mall
 
 ```{r}
-NextWordPredictor("Go on a romantic date at the", 4, " ")
+NextWordPredictor("Go on a romantic date at the", 2, " ")
 ```
+
+beach
+
+6.)  Well I'm pretty sure my granny has some old bagpipes in her garage I'll dust them off and be
+on my
+
+phone
+way
+motorcycle
+horse
+
+```{r}
+NextWordPredictor("Well I'm pretty sure my granny has some old bagpipes in her garage I'll dust them off and be on my", 2, " ")
+```
+
+way
+
+7.) Ohhhhh #PointBreak is on tomorrow. Love that film and haven't seen it in quite some
+
+thing
+weeks
+years
+time
+
+```{r}
+NextWordPredictor("Ohhhhh #PointBreak is on tomorrow. Love that film and haven't seen it in quite some", 2, " ")
+```
+
+time
+
+8.)  After the ice bucket challenge Louis will push his long wet hair out of his eyes with his little
+
+toes
+eyes
+ears
+fingers
+
+```{r}
+NextWordPredictor("After the ice bucket challenge Louis will push his long wet hair out of his eyes with his little", 2, " ")
+```
+
+ears???
+
+9.)  Be grateful for the good times and keep the faith during the
+
+bad
+sad
+hard
+worse
+
+```{r}
+NextWordPredictor("Be grateful for the good times and keep the faith during the", 2, " ")
+```
+
+
+
+10.)  If this isn't the cutest thing you've ever seen, then you must be
+
+insane
+asleep
+insensitive
+callous
+
+```{r}
+NextWordPredictor("If this isn't the cutest thing you've ever seen, then you must be", 4, " ")
+```
+
+
