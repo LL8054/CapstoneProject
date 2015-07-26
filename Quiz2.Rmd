@@ -25,10 +25,12 @@ soda
 cheese
 
 ```{r}
-NextWordPredictor("The guy in front of me just bought a pound of bacon, a bouquet, and a case of", 3, " ")
+a <- NextWordPredictor("The guy in front of me just bought a pound of bacon, a bouquet, and a case of", 2, " ")
+a[grepl("beer", names(a))] # beer = 28
+
 ```
 
-beer
+confirmd answer is beer
 
 2.) You're the reason why I smile everyday. Can you follow me please? It would mean the
 
@@ -42,7 +44,7 @@ most
 NextWordPredictor("You're the reason why I smile everyday. Can you follow me please? It would mean the", 3, " ")
 ```
 
-world
+confirmed answer is world
 
 3.)  Hey sunshine, can you follow me and make me the
 
@@ -53,10 +55,10 @@ bluest
 saddest
 
 ```{r}
-NextWordPredictor("Hey sunshine, can you follow me and make me the", 3, " ")
+NextWordPredictor("Hey sunshine, can you follow me and make me the", 2, " ")
 ```
 
-happiest
+confirmed answer is happiest
 
 4.)  Very early observations on the Bills game: Offense still struggling but the
 
@@ -67,10 +69,14 @@ crowd
 referees
 
 ```{r}
-system.time(NextWordPredictor("offense", 1, " "))
+a <- NextWordPredictor("Very early observations on the Bills game: Offense still struggling but the", 2, " ")
+a[grepl("crowd", names(a))] # crowd = 27, crowds = 7, crowd's = 2, crowded = 1 
+a[grepl("players", names(a))] # players = 18, players = 1 (again??)
+a[grepl("defense", names(a))] # defense = 16, defenseman = 1, defense = 1
 ```
 
-defense
+answer is not crowd
+answer is not players
 
 5.)  Go on a romantic date at the
 
@@ -84,7 +90,7 @@ mall
 NextWordPredictor("Go on a romantic date at the", 2, " ")
 ```
 
-beach
+confirmed answer is beach
 
 6.)  Well I'm pretty sure my granny has some old bagpipes in her garage I'll dust them off and be
 on my
@@ -95,10 +101,13 @@ motorcycle
 horse
 
 ```{r}
-NextWordPredictor("Well I'm pretty sure my granny has some old bagpipes in her garage I'll dust them off and be on my", 2, " ")
+a <- NextWordPredictor("Well I'm pretty sure my granny has some old bagpipes in her garage I'll dust them off and be on my", 2, " ")
+a[grepl("phone", names(a))] # 701
+a[grepl("way", names(a))] #2136
+
 ```
 
-way
+confirmed answer is way
 
 7.) Ohhhhh #PointBreak is on tomorrow. Love that film and haven't seen it in quite some
 
@@ -111,7 +120,7 @@ time
 NextWordPredictor("Ohhhhh #PointBreak is on tomorrow. Love that film and haven't seen it in quite some", 2, " ")
 ```
 
-time
+confirmed answer is time
 
 8.)  After the ice bucket challenge Louis will push his long wet hair out of his eyes with his little
 
@@ -121,10 +130,14 @@ ears
 fingers
 
 ```{r}
-NextWordPredictor("After the ice bucket challenge Louis will push his long wet hair out of his eyes with his little", 4, " ")
+a <- NextWordPredictor("After the ice bucket challenge Louis will push his long wet hair out of his eyes with his little", 2, " ")
+a[grepl("fingers", names(a))] #3
+a[grepl("ears", names(a))] #1
+a[grepl("eyes", names(a))] #1
 ```
 
-ears
+answer is not ears
+confirmed answer is fingers
 
 9.)  Be grateful for the good times and keep the faith during the
 
@@ -134,10 +147,13 @@ hard
 worse
 
 ```{r}
-NextWordPredictor("Be grateful for the good times and keep the faith during the", 4, " ")
+a <- NextWordPredictor("Be grateful for the good times and keep the faith during the", 2, " ")
+a[grepl("bad", names(a))] # bad = 4x
+a[grepl("hard", names(a))] # hard = 4, hardest = 1, hard = 1 (again??), harder = 1
 ```
 
-
+answer is not hard
+confirmed answer is bad
 
 10.)  If this isn't the cutest thing you've ever seen, then you must be
 
@@ -147,7 +163,8 @@ insensitive
 callous
 
 ```{r}
-NextWordPredictor("If this isn't the cutest thing you've ever seen, then you must be", 4, " ")
+a <- NextWordPredictor("If this isn't the cutest thing you've ever seen, then you must be", 2, " ")
+a[grepl("insane", names(a))] #insane = 4
 ```
 
-
+confirmed answer is insane

@@ -11,26 +11,13 @@ library(tau)
 
 NextWordPredictor <- function(input=char(), n=integer(), a=char()){
     
-    #next three lines of code will be removed when CreateEnBlogsNgrams() is up and running
-    enBlogs <- stri_read_lines("~/datasciencecoursera/Courses/Capstone/Coursera-SwiftKey/final/en_US/en_US.blogs.txt")
-    set.seed(100)
-    enBlogsSubset <- sample(enBlogs, size=length(enBlogs)*.01, replace=FALSE)
     
-    #next three lines of code will be removed when CreateEnTwitterNgrams() is up and running
-    enTwitter <- readLines("~/datasciencecoursera/Courses/Capstone/Coursera-SwiftKey/final/en_US/en_US.twitter.txt")
-    set.seed(100)
-    enTwitterSubset <- sample(enTwitter, size=length(enTwitter)*.01, replace=FALSE)
-    
-    #next three lines of code will be removed when CreateEnNewsNgrams() is up and running
-    enNews <- stri_read_lines("~/datasciencecoursera/Courses/Capstone/Coursera-SwiftKey/final/en_US/en_US.news.txt")
-    set.seed(100)
-    enNewsSubset <- sample(enNews, size=length(enNews)*.01, replace=FALSE)
     
     foundTail <- ngramTailFinder(input, n, a)
-    subset <- c(enBlogsSubset, enTwitterSubset, enNewsSubset)
-    grams <- dfm(subset, ngrams = n+1, verbose = TRUE)
     
-    
+    if (n == 0) {grams <- readRDS("~/datasciencecoursera/Courses/Capstone/Subsets/Unigrams.rds")}
+    if (n == 1) {grams <- readRDS("~/datasciencecoursera/Courses/Capstone/Subsets/Bigrams.rds")}
+    if (n == 2) {grams <- readRDS("~/datasciencecoursera/Courses/Capstone/Subsets/Trigrams.rds")}
     gramsFreq <- topfeatures(grams, n = nfeature(grams)) 
     #enBlogsGramsFreq.prune <- enBlogsGramsFreq[enBlogsGramsFreq > 1]
     #foundGrams <- enBlogsGramsFreq.prune[grepl(paste(c("^", foundTail), collapse=""),names(enBlogsGramsFreq.prune))]
