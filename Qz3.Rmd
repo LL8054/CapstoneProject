@@ -1,0 +1,248 @@
+---
+title: "Qz3"
+output: html_document
+---
+
+These file paths are for the desktop running Windows 7.
+
+
+```{r echo=FALSE}
+# library(stringi)
+# library(tm) 
+# library(quanteda)
+# library(RWeka)
+# library(tm)
+# library(tau)
+# 
+# 
+# enBlogs <- stri_read_lines("~/LL/Coursera/Courses/Capstone/Coursera-SwiftKey/final/en_US/en_US.blogs.txt")
+# set.seed(100)
+# enBlogsSubset <- sample(enBlogs, size=length(enBlogs)*.05, replace=FALSE)
+#     
+# enTwitter <- readLines("~/LL/Coursera/Courses/Capstone/Coursera-SwiftKey/final/en_US/en_US.twitter.txt")
+# set.seed(100)
+# enTwitterSubset <- sample(enTwitter, size=length(enTwitter)*.05, replace=FALSE)
+#     
+# enNews <- stri_read_lines("~/LL/Coursera/Courses/Capstone/Coursera-SwiftKey/final/en_US/en_US.news.txt")
+# set.seed(100)
+# enNewsSubset <- sample(enNews, size=length(enNews)*.05, replace=FALSE)
+#    
+# subset <- c(enBlogsSubset, enTwitterSubset, enNewsSubset)
+# saveRDS(subset, "~/LL/Coursera/Courses/Capstone/Subsets/subset05.rds")
+# input <- strsplit(subset, "[,.:;?!]\\s*")
+# corpus <- Corpus(VectorSource(input))
+# inputClean <- tm_map(corpus, removeNumbers)
+# inputClean <- tm_map(inputClean, removeWords, stopwords("english")) 
+# inputClean <- tm_map(inputClean, removePunctuation)
+# inputClean <- tm_map(inputClean, content_transformer(tolower))
+# inputClean <- tm_map(inputClean, stripWhitespace)
+# tdm <- TermDocumentMatrix(inputClean)
+# saveRDS(tdm, "~/LL/Coursera/Courses/Capstone/Subsets/tdm05.rds")
+```
+
+```{r echo=FALSE}
+library(stringi)
+library(tm) 
+library(quanteda)
+library(RWeka)
+library(tm)
+library(tau)
+
+
+###########################################################
+############## Trying to use Correlation ##################
+###########################################################
+# tdm <- readRDS("~/LL/Coursera/Courses/Capstone/Subsets/tdm05.rds")
+# system.time(live.05 <- findAssocs(tdm, "live and", .05))
+# #live.05 <- order(live.01[-live.01$live])
+# live.05 <- live.05$live
+# grep("sleep", names(live.05)) #no
+# grep("die", names(live.05)) #no
+# grep("eat", names(live.05))
+# grep("give", names(live.05))
+
+
+###########################################################
+############## using keywords plus one approach ###########
+###########################################################
+
+
+NextWord <- function(a = char()){
+        subset <- readRDS("~/LL/Coursera/Courses/Capstone/Subsets/subset50.rds")
+        options(warn=-1)
+        string <- grep(a, subset)
+        awords <- strsplit(a, " ")
+        
+        if(length(string) == 0){ 
+                library(tm)
+                tdm <- readRDS("~/LL/Coursera/Courses/Capstone/Subsets/tdm05.rds")
+                firstTwo <- c(awords[[1]][1], awords[[1]][2])
+                firstTwo <- paste(firstTwo, collapse=" ")
+                lastTwo <- c(awords[[1]][length(awords[[1]])-1], awords[[1]][length(awords[[1]])])
+                lastTwo <- paste(lastTwo, collapse=" ")
+                firstTwoCor <- findAssocs(tdm, firstTwo, .01)
+                lastTwoCor <- findAssocs(tdm, lastTwo, .01)
+                if (length(firstTwoCor)< 2) {stop("shorten the string")} 
+                if (length(lastTwoCor) < 2){stop("shorten the string")}
+                print(firstTwoCor)
+                print(lastTwoCor)}
+        
+        sentences <- strsplit(subset[string], " ")
+        locations <- as.integer()
+        words <- as.character()
+        for (i in 1:length(sentences)){
+                locations <- grep(awords[[1]][1], sentences[[i]]) + length(awords[[1]])
+                words[i] <- sentences[[i]][locations]
+        }
+        final <- sort(table(words), decreasing=TRUE)
+        return(final)
+        final
+}
+
+```
+
+
+
+1.) When you breathe, I want to be the air for you. I'll be there for you, I'd live and I'd
+
+sleep
+die
+eat
+give
+
+```{r echo=FALSE}
+NextWord("live and")
+```
+
+die
+
+2.)  Guy at my table's wife got up to go to the bathroom and I asked about dessert and he started telling me about his
+
+spiritual
+horticultural
+financial
+marital
+
+```{r echo=FALSE}
+NextWord("about his")
+grep("spiritual", NextWord("about his"))
+grep("horticultural", NextWord("about his"))
+grep("financial", NextWord("about his"))
+grep("marital", NextWord("about his"))
+```
+
+marital
+
+3.)  I'd give anything to see arctic monkeys this
+
+weekend
+morning
+month
+decade
+
+```{r echo=FALSE}
+NextWord("monkeys this")
+
+```
+
+weekend? pure guess
+
+4.)  Talking to your mom has the same effect as a hug and helps reduce your
+
+sleepiness
+happiness
+stress
+hunger
+
+```{r echo=FALSE}
+NextWord("reduce your")
+```
+
+stress
+
+5.)  When you were in Holland you were like 1 inch away from me but you hadn't time to take a
+
+minute
+walk
+picture
+look
+
+```{r echo=FALSE}
+NextWord("to take a")
+```
+
+picture
+
+6.)  I'd just like all of these questions answered, a presentation of evidence, and a jury to settle the
+
+case
+matter
+account
+incident
+
+```{r echo=FALSE}
+NextWord("settle the")
+```
+
+case is confirmed wrong
+matter
+
+7.)  I can't deal with unsymetrical things. I can't even hold an uneven number of bags of groceries in 
+
+each
+arm
+hand
+finger
+toe
+
+```{r echo=FALSE}
+NextWord("groceries in each")
+grep("arm", NextWord("each"))
+grep("hand", NextWord("each"))
+grep("finger", NextWord("each"))
+grep("toe", NextWord("each"))
+```
+
+hand
+
+8.)  Every inch of you is perfect from the bottom to the
+
+center
+top
+middle
+side
+
+```{r echo=FALSE}
+NextWord("bottom to the")
+```
+
+top
+
+9.)  I'm thankful my childhood was filled with imagination and bruises from playing
+
+weekly
+outside
+daily
+inside
+
+```{r echo=FALSE}
+NextWord("playing")
+```
+
+outside
+
+10.)  I like how the same people are in almost all of Adam Sandler's
+
+novels
+movies
+pictures
+stories
+
+```{r echo=FALSE}
+NextWord("Adam Sandler")
+```
+
+movie
+
+
+

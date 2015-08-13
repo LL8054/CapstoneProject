@@ -4,6 +4,7 @@ library(quanteda) # download package from devtools::install_github("kbenoit/quan
 library(caTools)
 library(wordcloud)
 library(data.table)
+library(stringi)
 
 setwd("~/datasciencecoursera/Courses/Capstone/capstoneproject")
 path <- "~/datasciencecoursera/Courses/Capstone/Coursera-SwiftKey/final"

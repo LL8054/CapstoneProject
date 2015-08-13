@@ -20,11 +20,15 @@ inputDTM <- DocumentTermMatrix(inputClean, control = list(wordLengths = c(3, Inf
 
 options(mc.cores = 1)
 
-BigramTokenizer <- function(x, n=2) return(rownames(as.data.frame(unclass(textcnt(x,method="string",n=n)))))
-TrigramTokenizer <- function(x, n=3) return(rownames(as.data.frame(unclass(textcnt(x,method="string",n=n)))))
-QuadgramTokenizer <- function(x, n=4) return(rownames(as.data.frame(unclass(textcnt(x,method="string",n=n)))))
-PentagramTokenizer <- function(x, n=5) return(rownames(as.data.frame(unclass(textcnt(x,method="string",n=n)))))
-HexagramTokenizer <- function(x, n=6) return(rownames(as.data.frame(unclass(textcnt(x,method="string",n=n)))))
+#BigramTokenizer <- function(x, n=2) return(rownames(as.data.frame(unclass(textcnt(x,method="string",n=n)))))
+#TrigramTokenizer <- function(x, n=3) return(rownames(as.data.frame(unclass(textcnt(x,method="string",n=n)))))
+#QuadgramTokenizer <- function(x, n=4) return(rownames(as.data.frame(unclass(textcnt(x,method="string",n=n)))))
+#PentagramTokenizer <- function(x, n=5) return(rownames(as.data.frame(unclass(textcnt(x,method="string",n=n)))))
+#HexagramTokenizer <- function(x, n=6) return(rownames(as.data.frame(unclass(textcnt(x,method="string",n=n)))))
+
+BigramTokenizer <- function(x) NGramTokenizer(x, Weka_control(min = 2, max = 2))
+TrigramTokenizer <- function(x) NGramTokenizer(x, Weka_control(min = 3, max = 3))
+QuadgramTokenizer <- function(x) NGramTokenizer(x, Weka_control(min = 4, max = 4))
 
 
 #Unigrams

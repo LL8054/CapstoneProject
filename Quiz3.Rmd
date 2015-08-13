@@ -1,0 +1,34 @@
+---
+title: "Quiz3"
+author: "Lawrence Lau"
+date: "July 27, 2015"
+output: html_document
+---
+
+```{r}
+library(stringi)
+library(tm)
+library(quanteda)
+source('~/datasciencecoursera/Courses/Capstone/capstoneproject/ngramTailFinder.R')
+source('~/datasciencecoursera/Courses/Capstone/capstoneproject/NextWordPredictor.R')
+source('~/datasciencecoursera/Courses/Capstone/capstoneproject/ngramTailFinder1.R')
+```
+
+For each of the sentence fragments below use your natural language processing algorithm to predict the next word in the sentence. 
+
+1.) When you breathe, I want to be the air for you. I'll be there for you, I'd live and I'd
+
+sleep
+die
+eat
+give
+
+
+```{r}
+system.time(a <- NextWordPredictor("When you breathe, I want to be the air for you. I'll be there for you, I'd live and I'd", 3, " "))
+a[grepl("sleep", names(a))] 
+a[grepl("die", names(a))]
+a[grepl("eat", names(a))]
+a[grepl("give", names(a))]
+```
+
