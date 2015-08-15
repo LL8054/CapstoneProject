@@ -1,0 +1,18 @@
+rm(list=ls())
+options(warn=-1)
+source('~/datasciencecoursera/Courses/Capstone/capstoneproject/ngramTailFinder.R')
+source('~/datasciencecoursera/Courses/Capstone/capstoneproject/ngramTailFinder1.R')
+library(stringi)
+library(tm) 
+library(quanteda)
+library(RWeka)
+library(tm)
+library(tau)
+library(slam)
+
+grams <- readRDS("~/datasciencecoursera/Courses/Capstone/Subsets/quadgrams01.rds")
+quadgrams <- rollup(grams,2,na.rm=TRUE,fun=sum)
+QuadGram_model_dt <- data.table(token=QuadGram_model$dimnames$Terms, count= QuadGram_model$v)
+QuadGram_model_dt2<-data.table(separate(QuadGram_model_dt,token,c("token1","token2","token3","token4"),sep=" ",extra="drop"),token=QuadGram_model_dt$token)
+###Top four word n-grams, by their frequency
+head(QuadGram_model_dt2[order(-count)])

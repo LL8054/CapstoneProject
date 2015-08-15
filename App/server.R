@@ -2,8 +2,8 @@
 
 library(shiny)
 options(warn=-1)
-source('~/datasciencecoursera/Courses/Capstone/capstoneproject/ngramTailFinder.R')
-source('~/datasciencecoursera/Courses/Capstone/capstoneproject/ngramTailFinder1.R')
+source('data/ngramTailFinder.R')
+source('data/ngramTailFinder1.R')
 library(stringi)
 library(tm) 
 library(quanteda)
@@ -26,15 +26,15 @@ shinyServer(
                 gramsFreq <- topfeatures(grams, n = nfeature(grams))
             }
             if (n == 1) {
-                grams <- readRDS("data/bigramsDT25.rds")
+                grams <- readRDS("data/bigrams01.rds")
                 gramsFreq <- grams[order(count, decreasing=TRUE)]
             }
             if (n == 2) {
-                grams <- readRDS("data/trigramsDT25.rds")
+                grams <- readRDS("data/trigrams01.rds")
                 gramsFreq <- grams[order(count, decreasing=TRUE)]
             }
             if (n == 3) {
-                grams <- readRDS("data/quadgramsDT25.rds")
+                grams <- readRDS("data/quadgrams01.rds")
                 gramsFreq <- grams[order(count, decreasing=TRUE)]
             }
             
