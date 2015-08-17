@@ -22,10 +22,10 @@ shinyServer(
             inputTail <- tail(inp, 3)
             n <- as.numeric(length(inputTail))
             
-            if (n == 0) {
-                grams <- readRDS("data/uniFreqDF.rds")
-                gramsFreq <- topfeatures(grams, n = nfeature(grams))
-            }
+#             if (n == 0) {
+#                 gramsFreq <- readRDS("data/uniFreq.rds")
+#                 gramsFreq <- data.table(count=(gramsFreq), token=names(gramsFreq))
+#             }
             if (n == 1) {
                 grams <- readRDS("data/bigrams01.rds")
                 gramsFreq <- grams[order(count, decreasing=TRUE)]
@@ -46,7 +46,7 @@ shinyServer(
                 ###########################################################################################
                 ###################### build stemmed and stopped trigrams from input ######################
                 ###########################################################################################
-                input2 <- paste(input, collapse=" ")
+                input2 <- paste(inp, collapse=" ")
                 inputCorpus <- Corpus(VectorSource(input2))
                 inputClean <- tm_map(inputCorpus, removeNumbers)
                 inputClean <- tm_map(inputClean, removeWords, stopwords("english")) 
@@ -147,7 +147,6 @@ shinyServer(
             }
             else{
                 
-                foundNames <- names(foundGrams)
                 foundWords <- as.character()
                 foundWords <- foundGrams[[n+1]]
                 if(as.numeric(length(foundWords)) < 4) {
