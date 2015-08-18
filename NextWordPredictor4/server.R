@@ -41,7 +41,7 @@ shinyServer(
             
             
             foundGrams <- gramsFreq[grepl(paste(c("^",paste(inputTail, collapse=" ")), collapse=""), gramsFreq$token)]
-            if(identical(as.numeric(nrow(foundGrams)), 0)) {
+            if(identical(as.numeric(nrow(foundGrams)), 0)) { #1
                 
                 ###########################################################################################
                 ###################### build stemmed and stopped trigrams from input ######################
@@ -72,104 +72,110 @@ shinyServer(
                 foundFailGrams <- trigramsDTprune25[grepl(paste(c("^",paste(foundFailTail, collapse=" ")), collapse=""), 
                                                           trigramsDTprune25$token)]
                 
-                if(identical(as.numeric(nrow(foundFailGrams)),0)) {
+                if(identical(as.numeric(nrow(foundFailGrams)),0)) { #2
                     
                     ###########################################################################################
                     ###########################  search n-1 grams  from 25% subset  ###########################
                     ###########################################################################################
-                    
-                    inputTail2 <- inputTail[-1]
-                    foundGrams2 <- gramsFreq[grepl(paste(c("^",paste(inputTail2, collapse=" ")), collapse=""), gramsFreq$token)]
-                    
-                    if(identical(as.numeric(nrow(foundGrams2)), 0)){
+                    if(length(inputTail) > 1){ #2.1
                         
-                        ###########################################################################################
-                        ######################  search for last tail word from 25% subset  ########################
-                        ###########################################################################################
+                        inputTail2 <- inputTail[-1]
+                        foundGrams2 <- gramsFreq[grepl(paste(c("^",paste(inputTail2, collapse=" ")), collapse=""), gramsFreq$token)]
                         
-                        inputTail3 <- inputTail2[length(inputTail2)]
-                        foundGrams3 <- gramsFreq[grepl(inputTail3, gramsFreq$token)]
-                        
-                        if(identical(as.numeric(nrow(foundGrams3)), 0)){
-                            cout <- "sorry, do you have misspelled words?"
-                            print(cout)
-                        }
-                        else {
-                            n3 <- length(inputTail3)
-                            foundNames <- names(foundGrams3)
-                            foundWords <- as.character()
-                            foundWords <- foundGrams3[[n3+1]]
-                            if(as.numeric(length(foundWords)) < 4) {
-                                return(foundWords)
+                        if(identical(as.numeric(nrow(foundGrams2)), 0)){ #2.1.1
+                            
+                            ###########################################################################################
+                            ######################  search for last tail word from 25% subset  ########################
+                            ###########################################################################################
+                            
+                            inputTail3 <- inputTail2[length(inputTail2)]
+                            foundGrams3 <- gramsFreq[grepl(inputTail3, gramsFreq$token)]
+                            
+                            if(identical(as.numeric(nrow(foundGrams3)), 0)){ #2.1.1.1
+                                cout <- "sorry, do you have misspelled words?"
+                                print(cout)
                             }
-                            else {
-                                foundWordsShort <- foundWords[1:3]
+                            else { #2.1.1.1
+                                n3 <- length(inputTail3)
+                                foundNames <- names(foundGrams3)
+                                foundWords <- as.character()
+                                foundWords <- foundGrams3[[n3+1]]
+                                if(as.numeric(length(foundWords)) < 4) { #2.1.1.1.1
+                                    return(foundWords[1])
+                                }
+                                else { #2.1.1.1.1
+                                    foundWordsShort <- foundWords[1]
+                                    return(foundWordsShort)
+                                }
+                            }
+                        }
+                        else{ #2.1.1
+                            
+                            n3 <- length(inputTail2)
+                            foundNames <- names(foundGrams2)
+                            foundWords <- as.character()
+                            foundWords <- foundGrams2[[n3+1]]
+                            if(as.numeric(length(foundWords)) < 4) { #2.1.1.1
+                                return(foundWords[1])
+                            }
+                            else { #2.1.1.1
+                                foundWordsShort <- foundWords[1]
                                 return(foundWordsShort)
                             }
+                            
                         }
                     }
-                    else {
-                        n2 <- length(inputTail2)
-                        foundNames <- names(foundGrams2)
-                        foundWords <- as.character()
-                        foundWords <- foundGrams2[[n2+1]]
-                        if(as.numeric(length(foundWords)) < 4) {
-                            return(foundWords)
-                        }
-                        else {
-                            foundWordsShort <- foundWords[1:3]
-                            return(foundWordsShort)
-                        }
-                        
-                        
+                    else{ #2.1
+                        cout <- "sorry, do you have misspelled words?"
+                        print(cout)
                     }
-                }
-                else {
+                 }
+            
+            else { #2
                     
-                    nFail <- length(foundFailTail)
-                    foundNames <- names(foundFailGrams)
-                    foundWords <- as.character()
-                    foundWords <- foundFailGrams[[nFail+1]]
-                    if(as.numeric(length(foundWords)) < 4) {
-                        print(foundWords)
-                    }
-                    else {
-                        foundWordsShort <- foundWords[1:3]
-                        return(foundWordsShort)
-                    }
-                    
-                }
-                
-                ###########################################################################################
-                ################  end search stemmed and stopped trigrams from 25% subset  ################
-                ###########################################################################################
-                
-            }
-            else{
-                
+                nFail <- length(foundFailTail)
+                #foundNames <- names(foundFailGrams)
                 foundWords <- as.character()
-                foundWords <- foundGrams[[n+1]]
-                if(as.numeric(length(foundWords)) < 4) {
-                    return(foundWords)
+                foundWords <- foundFailGrams[[nFail+1]]
+                if(as.numeric(length(foundWords)) < 4) { #2.1
+                    print(foundWords[1])
                 }
-                else {
-                    foundWordsShort <- foundWords[1:3]
+                else { #2.1
+                    foundWordsShort <- foundWords[1]
                     return(foundWordsShort)
                 }
-                
+                    
             }
-            
+                
+            ###########################################################################################
+            ################  end search stemmed and stopped trigrams from 25% subset  ################                ###########################################################################################
+                
         }
-        
-        
-        observe({
-            if (input$save == 0)
-                return()
+        else{ #1
+                
+            foundWords <- as.character()
+            foundWords <- foundGrams[[n+1]]
+            if(as.numeric(length(foundWords)) < 4) {
+                return(foundWords[1])
+            }
+            else {
+                foundWordsShort <- foundWords[1]
+                return(foundWordsShort)
+            }
+                
+        }
             
-            isolate({
-                output$result <- renderPrint({NextWordPredictor4(input$Input)})
-            })
-        })
+    }
         
-       }
+        
+    observe({
+        if (input$save == 0)
+            return()
+            
+        isolate({
+            output$result <- renderPrint({NextWordPredictor4(input$Input)})
+        })
+    })
+        
+   }
 )
