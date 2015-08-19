@@ -11,7 +11,7 @@ widgets     : [mathjax, quiz, bootstrap]            # {mathjax, quiz, bootstrap}
 mode        : selfcontained # {standalone, draft}
 knit        : slidify::knit2slides
 
----
+--- 
 
 ## What Is This App??
 
@@ -56,7 +56,7 @@ From my research, Laplace Smoothing's smoothing process overcompensated for obse
 
 ## Further Details
 
-- The first iteration of the app included a function which analyzed a phrase for misspelled words if the original input phrase returned no matches. (This function was also based on ngram combinations, but with letters instead of words.) However I decided not to include that functionf or the published version because it added considerable processing time, making the experience frustrating, and also because it wasn't that accurate.  
+- The first iteration of the app included a function which analyzed a phrase for misspelled words if the original input phrase returned no matches. (This function was also based on ngram combinations, but with letters instead of words.) However I decided not to include that function for the published version because it added considerable processing time, making the experience frustrating, and also because it wasn't that accurate.  
 
 - I originally intended to not filter swear words from results.  But I found accuracy was higher and processing time lower with them filtered, so they're now filtered.  
 
