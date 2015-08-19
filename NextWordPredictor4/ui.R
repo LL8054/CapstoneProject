@@ -1,6 +1,6 @@
 #ui.R for NLP app
 
-shinyUI(navbarPage("NLP App",
+shinyUI(navbarPage("Next Word Predictor",
                    
                    tabPanel("Prediction",
                             sidebarPanel(
@@ -14,20 +14,20 @@ shinyUI(navbarPage("NLP App",
                                 textInput("Input", "Input", value="Enter Text..."),
                                 actionButton("save", "THE BUTTON")
                                 ),
-                            mainPanel(
+                            mainPanel("Your next word most likely is",
                                 verbatimTextOutput("result")
                                 )
-                    ),
-                   tabPanel("Documentation",
-                            mainPanel(
-                                h3('Explanation'),
-                                p("blah blah blah", 
-                                  style = "font-family: 'baskerville'; font-si16pt"),
-                                p("more info", 
-                                  style = "font-family: 'baskerville'; font-si16pt")
-                            )
-                       
                     )
+#                    tabPanel("Documentation",
+#                             mainPanel(
+#                                 h3('Explanation'),
+#                                 p("blah blah blah", 
+#                                   style = "font-family: 'baskerville'; font-si16pt"),
+#                                 p("more info", 
+#                                   style = "font-family: 'baskerville'; font-si16pt")
+#                             )
+#                        
+#                     )
                  
         )
 )

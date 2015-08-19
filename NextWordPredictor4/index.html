@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Next Word Predictor</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Next Word Predictor">
+  <meta name="author" content="Lawrence Lau">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="libraries/widgets/quiz/css/demo.css"></link>
+<link rel=stylesheet href="libraries/widgets/bootstrap/css/bootstrap.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Next Word Predictor</h1>
+    <h2>emphasizing the &quot;artificial&quot; and scandalizing the &quot;intelligence&quot; in A.I.</h2>
+    <p>Lawrence Lau<br/>Use your keyboard's left and right arrows to navigate slides</p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>What Is This App??</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>This app takes an user-input phrase (English only s&#39;il vous plait) and predicts the next word. For example, given the phrase </p>
+
+<pre><code class="r">&quot;Beauty and the&quot;
+</code></pre>
+
+<p>it will predict the next word, which most of us in the Western world would think is </p>
+
+<pre><code class="r">&quot;Beast&quot;  
+</code></pre>
+
+<p>But how does it work, you ask?  Ah, here&#39;s how the magic happens.</p>
+
+<p>An algorithm, (which I call Crooked Arrow), is exposed to and trained from a huge volume of written texts comprised of Tweets, blogs, and news articles in English.  Collectively, this group of texts is called the Corpus.  A small subset of the Corpus is set aside and used later to test the accuracy of Crooked Arrow. You don&#39;t want to include that subset in the algorithm&#39;s training subset otherwise the accuracy will show a confirmation bias that overstates the result.  </p>
+
+<p>After the algorithm is honed, it&#39;s then included as part of the function that powers the app.  The function takes the user-input phrase, passes it through the algorithm, and then returns and displays the most likely next word.  </p>
+
+<p>It sounds easy enough conceptually.  Let&#39;s take a deeper look at the actual algorithm.  </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h2>The Algorithm (Crooked Arrow)</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Crooked Arrow is inherently an n-gram based algorithm. That is, it breaks down the user-input phrase into trigrams (groups of three words) and searches the Corpus for quadgrams (groups of four words) that contain those trigrams.  It then ranks those matching quadgrams based on the number of times those quadgrams appear in the Corpus (the frequency).  Should there be no quadgrams found which contain those trigrams, then a Katz back-off model<a href="https://en.wikipedia.org/wiki/Katz%27s_back-off_model">*</a> is used to find the most reliable result based on the Corpus. </p>
+
+<p>Even though the matching ngrams are ranked on frequency, it&#39;s not always quite as simple as taking the most frequently observed ngram and deciding the result is found within.  Why?  Well remember the Corpus that Crooked Arrow is trained on isn&#39;t a comprehensive collection of everything ever written in the English language. So the probabilities it calculates based on observed frequencies alone  won&#39;t take into account words not appearing in the Corpus. In creating the algorithm, I had to decide between several different methods of calculating and assigning the likeliest probability result.  The methods I considered were:</p>
+
+<p>1.)  Maximum Likelihood Estimation <a href="http://en.wikipedia.org/wiki/Maximum_likelihood">(MLE)</a> - calculates the result based on observed phenomena only. </p>
+
+<p>2.)  Simple Good-Turing <a href="http://en.wikipedia.org/wiki/Good%E2%80%93Turing_frequency_estimation">(SGT)</a> - takes into account unseen observations.</p>
+
+<p>3.)  Additive Smoothing <a href="https://en.wikipedia.org/wiki/Additive_smoothing">(or Laplace Smoothing)</a> - takes into account unseen observations.  </p>
+
+<p>From my research, Laplace Smoothing&#39;s smoothing process overcompensated for observations unknown and unseen when compared to Simple Good-Turing. Theoretically, SGT is the best method for statistically predicting the result.  However in my algorithm I actually use the MLE method-  in my tests, it ran incrementally faster, albeit ~3% less accurate.  Since I&#39;m uploading the app to shinyapps.io I need the app to be as trim as it can be to give the user the best possible experience.  I opted to go with speed over accuracy.  To be honest, it&#39;s only incrementally faster, but because I designed the app to constantly run as the user generated input (instead of necessitating button pushes by the user after every input phrase) I need it to be as fast as possible otherwise the accrued lag would be an app killer. </p>
+
+<p>*Follow <a href="https://en.wikipedia.org/wiki/Katz%27s_back-off_model">the link</a> for a more technical description of Katz&#39;s back-off model.  Basically the idea is it makes smaller ngrams until a reliable match is found.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Further Details</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li><p>The first iteration of the app included a function which analyzed a phrase for misspelled words if the original input phrase returned no matches. (This function was also based on ngram combinations, but with letters instead of words.) However I decided not to include that functionf or the published version because it added considerable processing time, making the experience frustrating, and also because it wasn&#39;t that accurate.  </p></li>
+<li><p>I originally intended to not filter swear words from results.  But I found accuracy was higher and processing time lower with them filtered, so they&#39;re now filtered.  </p></li>
+<li><p>You&#39;ll recall I named the algorithm &quot;Crooked Arrow&quot;. That&#39;s because like a crooked arrow, the algorithm actually isn&#39;t that accurate (it&#39;s about 20% accurate).  And the longer the phrase (or to go with the analogy, the longer the distance the arrow covers), the less accurate the result is. Accordingly, the first few words of a sentence or phrase construction are predicted more accurately than the last few.   </p></li>
+<li><p>If I had more processing power I would add the following features:  a larger training corpus set, a regionalized corpus training set based on the user&#39;s geographic information (you/ya&#39;ll/you guys etc), a dictionary and thesaurus based on word correlations and prepositions (for synonyms and antonyms), and a secondary &quot;fail-safe&quot; algorithm that identifies phrases with &quot;significant&quot; words (for example in the phrase &quot;Very early observations on the Bills game: Offense still struggling but the&quot;, the significant words are &quot;Bills&quot;, &quot;game&quot;, &quot;offense&quot;, &quot;struggling&quot;, &quot;but&quot;.)</p></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>Use It!</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>The app&#39;s interface is easy enough to use.  Simply enter a phrase in the text box and click &quot;THE BUTTON&quot;.  Once you click &quot;THE BUTTON&quot;, the app will constantly run and update until you shut the window.  If after you click &quot;THE BUTTON&quot; you leave the text box completely blank, it will display an error in the result box but don&#39;t mind it, that will disappear once you populate the text box again.  </p>
+
+<p>Without further ado, here&#39;s the app!</p>
+
+<p><a href="https://ll8054.shinyapps.io/NextWordPredictor4">Next Word Predictor</a></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='What Is This App??'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='The Algorithm (Crooked Arrow)'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Further Details'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Use It!'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  <script src="libraries/widgets/quiz/js/jquery.quiz.js"></script>
+<script src="libraries/widgets/quiz/js/mustache.min.js"></script>
+<script src="libraries/widgets/quiz/js/quiz-app.js"></script>
+<script src="libraries/widgets/bootstrap/js/bootstrap.min.js"></script>
+<script src="libraries/widgets/bootstrap/js/bootbox.min.js"></script>
+
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<script>  
+  $(function (){ 
+    $("#example").popover(); 
+    $("[rel='tooltip']").tooltip(); 
+  });  
+  </script>  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
